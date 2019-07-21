@@ -20,6 +20,7 @@ services:
       ASPNETCORE_ENVIRONMENT: "docker"
     depends_on:
       - sqlServer
+    restart: on-failure
     networks:
       - shared
 networks:
