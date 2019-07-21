@@ -1,7 +1,7 @@
 namespace Dictionary.Repositories
 {
     using System.Threading.Tasks;
-    using Controllers;
+    using Interfaces;
     using Microsoft.EntityFrameworkCore;
     using Models;
 

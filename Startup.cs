@@ -6,8 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Dictionary
 {
-    using Controllers;
+    using Interfaces;
     using Microsoft.EntityFrameworkCore;
+    using Middleware;
     using Repositories;
     using Services;
     using Swashbuckle.AspNetCore.Swagger;
@@ -31,6 +32,7 @@ namespace Dictionary
             services.AddScoped<ITermService, TermService>();
             services.AddScoped<IDataSeeder, DataSeeder>();
             services.AddScoped<ITermRepository, TermRepository>();
+            services.AddTransient<ExceptionHandleMiddleware>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,6 +48,7 @@ namespace Dictionary
                 app.UseHsts();
             }
 
+            app.UseMiddleware<ExceptionHandleMiddleware>();
             app.UseMvc();
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Dictionary V1"));

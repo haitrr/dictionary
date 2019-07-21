@@ -49,7 +49,6 @@ namespace Dictionary
           var toLang = langs[1];
           this.logger.LogInformation($"Importing {name} dictionary.");
           var terms = JsonConvert.DeserializeObject<Term[]>(File.ReadAllText(file));
-          this.logger.LogInformation($"Imported {terms.Length} terms.");
           foreach (var term in terms)
           {
             term.OriginalLanguage = fromLang;

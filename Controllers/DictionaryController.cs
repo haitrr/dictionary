@@ -1,6 +1,7 @@
 ﻿namespace Dictionary.Controllers
 {
     using System.Threading.Tasks;
+    using Interfaces;
     using Microsoft.AspNetCore.Mvc;
 
     [Route("dictionary")]

@@ -10,6 +10,12 @@ namespace Dictionary
         {
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Term>().HasIndex(t => t.Text).IsUnique();
+            base.OnModelCreating(modelBuilder);
+        }
+
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public DbSet<Term> Terms { get; set; }
     }
