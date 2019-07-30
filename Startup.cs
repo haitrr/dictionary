@@ -25,6 +25,7 @@ namespace Dictionary
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new Info { Title = "Dictionary API", Version = "V1" }); });
             services.AddDbContext<DictionaryDbContext>(
@@ -48,6 +49,10 @@ namespace Dictionary
                 app.UseHsts();
             }
 
+            app.UseCors(c => c.AllowCredentials()
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowAnyOrigin());
             app.UseMiddleware<ExceptionHandleMiddleware>();
             app.UseMvc();
             app.UseSwagger();
