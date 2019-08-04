@@ -1,7 +1,6 @@
 namespace Dictionary.Services
 {
     using System.Threading.Tasks;
-    using Controllers;
     using Exceptions;
     using Interfaces;
     using Models;
