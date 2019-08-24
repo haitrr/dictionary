@@ -12,8 +12,8 @@ namespace Dictionary
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Term>().HasIndex(t => t.Text).IsUnique();
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Term>().HasIndex(t => t.Text).IsUnique();
         }
 
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
