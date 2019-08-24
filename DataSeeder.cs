@@ -1,6 +1,7 @@
 namespace Dictionary
 {
   using System.IO;
+  using Dictionary.Interfaces;
   using Dictionary.Models;
   using Microsoft.EntityFrameworkCore;
   using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -10,7 +11,7 @@ namespace Dictionary
 
   public class DataSeeder : IDataSeeder
   {
-    private readonly DictionaryDbContext dictionaryDbContext;
+    private readonly ITermRepository termRepository;
     private readonly ILogger<DataSeeder> logger;
 
     /// <summary>
@@ -25,20 +26,19 @@ namespace Dictionary
     /// </summary>
     /// <param name="dictionaryDbContext">db context.</param>
     /// <param name="logger">logger.</param>
-    public DataSeeder(DictionaryDbContext dictionaryDbContext, ILogger<DataSeeder> logger)
+    public DataSeeder(ITermRepository termRepository, ILogger<DataSeeder> logger)
     {
-      this.dictionaryDbContext = dictionaryDbContext;
+      this.termRepository = termRepository;
       this.logger = logger;
     }
 
     /// <inheritdoc/>
     public void SeedDatabase()
     {
-      if (!((RelationalDatabaseCreator)this.dictionaryDbContext.Database.GetService<IDatabaseCreator>())
-          .Exists())
+      var termCount = this.termRepository.CountAsync(_=>true).GetAwaiter().GetResult();
+      if (termCount == 0)
       {
         this.logger.LogInformation("****** Begin seeding data. *********");
-        this.dictionaryDbContext.Database.Migrate();
         this.logger.LogInformation("Importing dictionaries");
 
         foreach (string file in Directory.EnumerateFiles("./Sources"))
@@ -55,8 +55,7 @@ namespace Dictionary
             term.ToLanguage = toLang;
           }
 
-          this.dictionaryDbContext.Terms.AddRange(terms);
-          this.dictionaryDbContext.SaveChanges();
+          this.termRepository.AddRangeAsync(terms).GetAwaiter().GetResult();
           this.logger.LogInformation($"Imported {terms.Length} terms.");
         }
 

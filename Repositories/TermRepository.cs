@@ -1,23 +1,24 @@
 namespace Dictionary.Repositories
 {
-    using System.Threading.Tasks;
-    using Interfaces;
-    using Microsoft.EntityFrameworkCore;
-    using Models;
+  using System;
+  using System.Collections;
+  using System.Threading.Tasks;
+  using Interfaces;
+  using Microsoft.EntityFrameworkCore;
+  using Models;
+  using MongoDB.Driver;
 
-    public class TermRepository : ITermRepository
+  public class TermRepository : GenericMongoRepository<Term>, ITermRepository
+  {
+    public TermRepository(MongoDbContext mongoDbContext) : base(mongoDbContext)
     {
-        private readonly DictionaryDbContext dbContext;
-
-        public TermRepository(DictionaryDbContext dbContext)
-        {
-            this.dbContext = dbContext;
-        }
-
-        public Task<Term> GetTermAsync(string text, string fromLang, string toLang)
-        {
-            return this.dbContext.Terms.SingleOrDefaultAsync(
-                t => t.Text == text.ToLowerInvariant() && t.OriginalLanguage == fromLang && t.ToLanguage == toLang);
-        }
     }
+
+    public Task<Term> GetTermAsync(string text, string fromLang, string toLang)
+    {
+      Console.WriteLine($"Querying {text} {fromLang} {toLang}");
+      return this.Collection.Find(
+          t => t.Text == text.ToLowerInvariant() && t.OriginalLanguage == fromLang && t.ToLanguage == toLang).SingleOrDefaultAsync();
+    }
+  }
 }

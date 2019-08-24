@@ -6,14 +6,15 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Dictionary
 {
-    using Interfaces;
-    using Microsoft.EntityFrameworkCore;
-    using Middleware;
-    using Repositories;
-    using Services;
-    using Swashbuckle.AspNetCore.Swagger;
+  using Dictionary.Interfaces;
+  using Microsoft.EntityFrameworkCore;
+  using Middleware;
+  using Dictionary.Models;
+  using Repositories;
+  using Services;
+  using Swashbuckle.AspNetCore.Swagger;
 
-    public class Startup
+  public class Startup
     {
         public Startup(IConfiguration configuration)
         {
@@ -34,7 +35,14 @@ namespace Dictionary
             services.AddScoped<IDataSeeder, DataSeeder>();
             services.AddScoped<ITermRepository, TermRepository>();
             services.AddTransient<ExceptionHandleMiddleware>();
+            services.AddSingleton<MongoDbContext>();
+
+            // bind mongo setting
+            var mongoSettings = new MongoDatabaseSettings();
+            Configuration.Bind("Mongo", mongoSettings);
+            services.AddSingleton<IMongoDatabaseSettings>(mongoSettings);
         }
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IDataSeeder dataSeeder)

@@ -1,6 +1,13 @@
 version: "3.7"
 
 services:
+  mongo:
+    image: mongo
+    restart: always
+    networks: 
+      - shared
+    ports:
+      - "27017:27017"
   sqlServer:
     container_name: sqlserver
     restart: always
