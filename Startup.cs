@@ -29,8 +29,6 @@ namespace Dictionary
             services.AddCors();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new Info { Title = "Dictionary API", Version = "V1" }); });
-            services.AddDbContext<DictionaryDbContext>(
-                o => o.UseSqlServer(this.Configuration.GetValue<string>("ConnectionString")));
             services.AddScoped<ITermService, TermService>();
             services.AddScoped<IDataSeeder, DataSeeder>();
             services.AddScoped<ITermRepository, TermRepository>();
