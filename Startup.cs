@@ -6,15 +6,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Dictionary
 {
-  using Dictionary.Interfaces;
-  using Microsoft.EntityFrameworkCore;
-  using Middleware;
-  using Dictionary.Models;
-  using Repositories;
-  using Services;
-  using Swashbuckle.AspNetCore.Swagger;
+    using Dictionary.Interfaces;
+    using Middleware;
+    using Dictionary.Models;
+    using Microsoft.OpenApi.Models;
+    using Repositories;
+    using Services;
 
-  public class Startup
+    public class Startup
     {
         public Startup(IConfiguration configuration)
         {
@@ -27,8 +26,10 @@ namespace Dictionary
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new Info { Title = "Dictionary API", Version = "V1" }); });
+            services.AddRouting();
+            services.AddControllers();
+            services.AddSwaggerGen(
+                c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "Dictionary API", Version = "V1" }); });
             services.AddScoped<ITermService, TermService>();
             services.AddScoped<IDataSeeder, DataSeeder>();
             services.AddScoped<ITermRepository, TermRepository>();
@@ -40,7 +41,6 @@ namespace Dictionary
             Configuration.Bind("Mongo", mongoSettings);
             services.AddSingleton<IMongoDatabaseSettings>(mongoSettings);
         }
-
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IDataSeeder dataSeeder)
@@ -55,12 +55,14 @@ namespace Dictionary
                 app.UseHsts();
             }
 
-            app.UseCors(c => c.AllowCredentials()
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowAnyOrigin());
+            app.UseCors(
+                c => c.AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowAnyOrigin());
+            app.UseRouting();
+            app.UseEndpoints(
+                o => { o.MapControllers(); });
             app.UseMiddleware<ExceptionHandleMiddleware>();
-            app.UseMvc();
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Dictionary V1"));
             dataSeeder.SeedDatabase();
