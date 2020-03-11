@@ -59,10 +59,10 @@ namespace Dictionary
                 c => c.AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowAnyOrigin());
+            app.UseMiddleware<ExceptionHandleMiddleware>();
             app.UseRouting();
             app.UseEndpoints(
                 o => { o.MapControllers(); });
-            app.UseMiddleware<ExceptionHandleMiddleware>();
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Dictionary V1"));
             dataSeeder.SeedDatabase();

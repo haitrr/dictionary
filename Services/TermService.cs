@@ -14,9 +14,9 @@ namespace Dictionary.Services
             this.termRepository = termRepository;
         }
 
-        public Task<Term> GetTermAsync(string text, string fromLang, string toLang)
+        public async Task<Term> GetTermAsync(string text, string fromLang, string toLang)
         {
-            var term = this.termRepository.GetTermAsync(text, fromLang, toLang);
+            var term = await this.termRepository.GetTermAsync(text, fromLang, toLang);
             if (term == null)
             {
                 throw new NotFoundException("Term not found.");
