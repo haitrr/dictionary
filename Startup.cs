@@ -35,7 +35,8 @@ namespace Dictionary
             services.AddScoped<IDataSeeder, DataSeeder>();
             services.AddScoped<ITermRepository, TermRepository>();
             services.AddTransient<ExceptionHandleMiddleware>();
-            services.AddDbContext<DictionaryDbContext>(o => o.UseSqlite("Data Source=dictionary.db;"));
+            services.AddDbContext<DictionaryDbContext>(o => 
+                o.UseInMemoryDatabase("dictionary"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,8 +58,7 @@ namespace Dictionary
                     .AllowAnyOrigin());
             app.UseMiddleware<ExceptionHandleMiddleware>();
             app.UseRouting();
-            app.UseEndpoints(
-                o => { o.MapControllers(); });
+            app.UseEndpoints(o => { o.MapControllers(); });
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Dictionary V1"));
             dataSeeder.SeedDatabase();
