@@ -4,7 +4,7 @@ namespace Dictionary.Models
 
     public class Term
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public int Id { get; set; }
         public string Text { get; set; }
         public string Meaning { get; set; }
         public string OriginalLanguage { get; set; }

@@ -3,15 +3,15 @@ namespace Dictionary
     using System.IO;
     using Dictionary.Interfaces;
     using Dictionary.Models;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
-    using MongoDB.Driver;
     using Newtonsoft.Json;
 
     public class DataSeeder : IDataSeeder
     {
         private readonly ITermRepository termRepository;
         private readonly ILogger<DataSeeder> logger;
-        private readonly MongoDbContext dbContext;
+        private readonly DictionaryDbContext dbContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DataSeeder"/> class.
@@ -26,7 +26,7 @@ namespace Dictionary
         /// <param name="termRepository">term repo.</param>
         /// <param name="logger">logger.</param>
         /// <param name="dbContext">db context.</param>
-        public DataSeeder(ITermRepository termRepository, ILogger<DataSeeder> logger, MongoDbContext dbContext)
+        public DataSeeder(ITermRepository termRepository, ILogger<DataSeeder> logger, DictionaryDbContext dbContext)
         {
             this.termRepository = termRepository;
             this.logger = logger;
@@ -36,6 +36,7 @@ namespace Dictionary
         /// <inheritdoc/>
         public void SeedDatabase()
         {
+            this.dbContext.Database.Migrate();
             var termCount = this.termRepository.CountAsync(_ => true)
                 .GetAwaiter()
                 .GetResult();
@@ -43,15 +44,6 @@ namespace Dictionary
             {
                 this.logger.LogInformation("****** Begin seeding data. *********");
                 this.logger.LogInformation("Importing dictionaries");
-
-                this.dbContext.GetCollection<Term>()
-                    .Indexes.CreateOne(
-                        new CreateIndexModel<Term>(
-                            Builders<Term>.IndexKeys.Combine(
-                                Builders<Term>.IndexKeys.Ascending(t => t.OriginalLanguage),
-                                Builders<Term>.IndexKeys.Ascending(t => t.ToLanguage),
-                                Builders<Term>.IndexKeys.Ascending(t => t.Text)),
-                            new CreateIndexOptions { Unique = true }));
 
                 foreach (string file in Directory.EnumerateFiles("./Sources"))
                 {

@@ -1,5 +1,6 @@
 namespace Dictionary.Interfaces
 {
+    using System;
     using System.Threading.Tasks;
   using Dictionary.Repositories;
   using Models;
@@ -7,5 +8,5 @@ namespace Dictionary.Interfaces
     public interface ITermRepository : IRepository<Term>
     {
         Task<Term> GetTermAsync(string text, string fromLang, string toLang);
-  }
+    }
 }

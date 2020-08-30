@@ -1,13 +1,12 @@
-namespace Dictionary.Repositories
+namespace Dictionary.Interfaces
 {
-  using System;
-  using System.Collections.Generic;
-  using System.Linq.Expressions;
-  using System.Threading.Tasks;
+    using System;
+    using System.Linq.Expressions;
+    using System.Threading.Tasks;
 
-  public interface IRepository<T>
-  {
-    Task<long> CountAsync(Expression<Func<T, bool>> filter);
-    Task AddRangeAsync(IEnumerable<T> objects);
-  }
+    public interface IRepository<T>
+    {
+        Task<int> CountAsync(Expression<Func<object, bool>> func);
+        Task AddRangeAsync(T[] entities);
+    }
 }

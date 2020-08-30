@@ -9,6 +9,7 @@ namespace Dictionary
     using Dictionary.Interfaces;
     using Middleware;
     using Dictionary.Models;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.OpenApi.Models;
     using Repositories;
     using Services;
@@ -34,12 +35,7 @@ namespace Dictionary
             services.AddScoped<IDataSeeder, DataSeeder>();
             services.AddScoped<ITermRepository, TermRepository>();
             services.AddTransient<ExceptionHandleMiddleware>();
-            services.AddSingleton<MongoDbContext>();
-
-            // bind mongo setting
-            var mongoSettings = new MongoDatabaseSettings();
-            Configuration.Bind("Mongo", mongoSettings);
-            services.AddSingleton<IMongoDatabaseSettings>(mongoSettings);
+            services.AddDbContext<DictionaryDbContext>(o => o.UseSqlite("Data Source=dictionary.db;"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
