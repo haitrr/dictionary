@@ -9,6 +9,7 @@ namespace Dictionary
     using Dictionary.Interfaces;
     using Middleware;
     using Dictionary.Models;
+    using Microsoft.Data.Sqlite;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.OpenApi.Models;
     using Repositories;
@@ -35,8 +36,12 @@ namespace Dictionary
             services.AddScoped<IDataSeeder, DataSeeder>();
             services.AddScoped<ITermRepository, TermRepository>();
             services.AddTransient<ExceptionHandleMiddleware>();
+            var connection = new SqliteConnection("Filename=:memory:");
+
+            connection.Open();
+        
             services.AddDbContext<DictionaryDbContext>(o => 
-                o.UseInMemoryDatabase("dictionary"));
+                o.UseSqlite(connection));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

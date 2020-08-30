@@ -36,7 +36,7 @@ namespace Dictionary
         /// <inheritdoc/>
         public void SeedDatabase()
         {
-            this.dbContext.Database.EnsureCreated();
+            this.dbContext.Database.Migrate();
             var termCount = this.termRepository.CountAsync(_ => true)
                 .GetAwaiter()
                 .GetResult();
