@@ -7,8 +7,6 @@ on:
   push:
     branches:
       - master
-env:
-  - ASPNETCORE_URLS=https://+;http://+;
 
 jobs:
   build-and-deploy:
@@ -30,6 +28,8 @@ jobs:
 
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
+      env:
+        ASPNETCORE_URLS: https://+;http://+;
       with:
         app-name: 'lwt-dictionary'
         slot-name: 'production'
